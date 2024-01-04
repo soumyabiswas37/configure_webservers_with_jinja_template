@@ -1,0 +1,48 @@
+---
+- hosts: all
+  vars:
+    webpackage: "httpd"
+    directory: "/var/www/newweb"
+    webpage: "index.html"
+    webservice: "httpd"
+    webport: 81
+    conf_path: "/etc/httpd/conf.d"
+    conf_file: "web.conf.j2"
+  tasks:
+    - name: "Install Webpackage"
+      package:
+        name: "{{ webpackage }}"
+        state: latest
+      register: pack
+
+    - debug:
+        var: pack
+
+    - name: "Create the directory"
+      file:
+        path: "{{ directory }}"
+        state: directory
+        mode: '777'
+
+    - name: "Create an deploy webpage"
+      template:
+        src: "{{ webpage }}"
+        dest: "{{ directory }}"
+      notify: "Restart Webservice"
+
+    - name: "Deploy the configuration file"
+      template:
+        src: "{{ conf_file }}"
+        dest: "{{ conf_path }}/web.conf"
+      notify: "Restart Webservice"
+
+    - name: "Start Web Service"
+      service:
+        name: "{{ webservice }}"
+        state: started
+
+  handlers:
+    - name: "Restart Webservice"
+      service:
+        name: "{{ webservice }}"
+        state: restarted
