@@ -1,4 +1,4 @@
-# configure_webservers_with_jinja_template
+# Deploy webpage to two different webservers and display the OS name and Kernel version in the webpage
 🌐 Deploy webpage to two different webservers and display the OS name and Kernel version in the webpage 🌐
 
 Introduction:
